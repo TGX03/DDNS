@@ -1,5 +1,6 @@
 package eu.tgx03.ddns;
 
+import java.io.Serializable;
 import java.net.Inet6Address;
 import java.net.UnknownHostException;
 
@@ -9,7 +10,7 @@ import java.net.UnknownHostException;
  * This class provides utilities for working with IPv6 prefixes and addresses,
  * including conversion between different networks.
  */
-public class IPv6Prefix {
+public class IPv6Prefix implements Serializable {
 
     /**
      * The upper 64 bits of this prefix.

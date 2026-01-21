@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
  * and, upon invocation of getZoneFile adjusts the previously loaded zonefile
  * so the placeholders are replaced, thereby especially making sure IPv6 addresses have their prefixes adjusted.
  */
-public class Zonefile {
+public class Zonefile implements Serializable {
 
     /**
      * The regex not actually being used to identify IPv4 addresses to be replaced.

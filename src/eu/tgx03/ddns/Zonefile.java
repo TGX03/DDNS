@@ -33,10 +33,10 @@ public class Zonefile {
      * A regular expression pattern that matches IPv6 suffix definitions in zone files.
      * The pattern is designed to parse strings representing mappings of an index to
      * an IPv6 suffix in the format "IP6_P_<index>=<IPv6-suffix>".
-     *
+     * <p>
      * - The first capturing group (\d+) captures the numeric index.
      * - The second capturing group ([0-9a-f:]{2,39}) captures the IPv6 suffix,
-     *   which is represented in hexadecimal colon-separated notation.
+     * which is represented in hexadecimal colon-separated notation.
      */
     private static final String IPv6_PREFIX_REGEX = "IP6_P_(\\d+)=([0-9a-f:]{2,39})";
 
@@ -79,6 +79,7 @@ public class Zonefile {
     /**
      * Creates a new instance of Zonefile from the provided String.
      * The String contains the plain zonefile data and replace operations will be executed directly upon it.
+     *
      * @param zoneBase The String of the zonefile
      */
     public Zonefile(String zoneBase) {
@@ -166,11 +167,11 @@ public class Zonefile {
      * Generates a zone file with placeholders replaced by the appropriate IPv4 and IPv6
      * addresses. The method performs the following operations in sequence:
      * 1. Replace IPv4 placeholders in the format `IP4_{index}` within the zone file
-     *    with the corresponding IPv4 addresses.
+     * with the corresponding IPv4 addresses.
      * 3. Replaces IPv6 placeholders in the format `IP6_{index}` within the zone file
-     *    with the corresponding IPv6 addresses.
+     * with the corresponding IPv6 addresses.
      * 4. Identifies and processes IPv6 prefix placeholders in the zone file, adjusts the
-     *    prefixes accordingly, and replaces them in the zone file.
+     * prefixes accordingly, and replaces them in the zone file.
      *
      * @return The updated zone file string after performing all address and prefix replacements.
      * @throws UnknownHostException If address resolution fails at any point during the operation.

@@ -59,7 +59,7 @@ public class IPv6Prefix {
      * @param address the IPv6 address to be converted, provided as an {@link Inet6Address} object.
      *                This address is broken down into its high-order 64 bits and low-order 64 bits.
      * @return an {@link IPv6Long} object containing the upper and lower 64-bit components
-     *         of the given IPv6 address.
+     * of the given IPv6 address.
      */
     public static IPv6Long IPv6ToLong(Inet6Address address) {
         byte[] bytes = address.getAddress();
@@ -141,28 +141,23 @@ public class IPv6Prefix {
      *                     value of 0 provides a mask of all zeroes, while a value of
      *                     128 provides a mask of all ones.
      * @return an {@link IPv6Long} object representing the prefix mask, where the
-     *         network bits are set to 1 up to the specified prefix length, and the
-     *         remaining bits are set to 0.
+     * network bits are set to 1 up to the specified prefix length, and the
+     * remaining bits are set to 0.
      * @throws IllegalArgumentException if the prefix length is outside the valid range [0, 128].
      */
     private static IPv6Long prefixMask(int prefixLength) {
         if (prefixLength == 0) return new IPv6Long(0L, 0L);
-        if (prefixLength < 0 || prefixLength > 128) throw new IllegalArgumentException("Invalid prefix length: " + prefixLength);
+        if (prefixLength < 0 || prefixLength > 128)
+            throw new IllegalArgumentException("Invalid prefix length: " + prefixLength);
 
         if (prefixLength == 64) {
             return new IPv6Long(-1L, 0L);
-        }
-
-        else if (prefixLength == 128) {
+        } else if (prefixLength == 128) {
             return new IPv6Long(-1L, -1L);
-        }
-
-        else if (prefixLength < 64) {
+        } else if (prefixLength < 64) {
             long upper = -1L << (64 - prefixLength);
             return new IPv6Long(upper, 0L);
-        }
-
-        else {
+        } else {
             long lower = -1L << (128 - prefixLength);
             return new IPv6Long(-1L, lower);
         }
@@ -177,27 +172,22 @@ public class IPv6Prefix {
      *                     results in a mask with all bits set to 1, and a value of 128 results
      *                     in a mask with all bits set to 0.
      * @return an {@link IPv6Long} object representing the suffix mask, where bits outside the
-     *         network portion are set to 1 and network bits are set to 0.
+     * network portion are set to 1 and network bits are set to 0.
      * @throws IllegalArgumentException if the prefix length is outside the valid range [0, 128].
      */
     private static IPv6Long suffixMask(int prefixLength) {
         if (prefixLength == 0) return new IPv6Long(-1L, -1L);
-        if (prefixLength < 0 || prefixLength > 128) throw new IllegalArgumentException("Invalid prefix length: " + prefixLength);
+        if (prefixLength < 0 || prefixLength > 128)
+            throw new IllegalArgumentException("Invalid prefix length: " + prefixLength);
 
         if (prefixLength == 64) {
             return new IPv6Long(0L, -1L);
-        }
-
-        else if (prefixLength == 128) {
+        } else if (prefixLength == 128) {
             return new IPv6Long(0L, 0L);
-        }
-
-        else if (prefixLength <= 64) {
+        } else if (prefixLength <= 64) {
             long upper = -1L >>> prefixLength;
             return new IPv6Long(upper, -1L);
-        }
-
-        else {
+        } else {
             long lower = -1 >>> (128 - prefixLength);
             return new IPv6Long(0L, lower);
         }
@@ -205,6 +195,7 @@ public class IPv6Prefix {
 
     /**
      * Changes the prefix of the given IPv6 address to this prefix.
+     *
      * @param address The address to modify.
      * @return The address with the new prefix.
      */
@@ -213,11 +204,12 @@ public class IPv6Prefix {
         long upperSuffix = addressLong.upper & this.upper_suffix_mask;
         long lowerSuffix = addressLong.lower & this.lower_suffix_mask;
 
-        long upperResult = this.upper |  upperSuffix;
+        long upperResult = this.upper | upperSuffix;
         long lowerResult = this.lower | lowerSuffix;
 
         return longToInet6Address(new IPv6Long(upperResult, lowerResult));
     }
 
-    public record IPv6Long(long upper, long lower) {}
+    public record IPv6Long(long upper, long lower) {
+    }
 }

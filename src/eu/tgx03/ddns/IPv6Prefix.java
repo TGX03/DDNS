@@ -20,6 +20,10 @@ public class IPv6Prefix implements Serializable {
      * The lower 64 bits of this prefix.
      */
     private final long lower;
+    /**
+     * The length of the prefix in bits.
+     */
+    private final int prefixLength;
 
     /**
      * The upper 64 bits of the suffix mask used to adjust IP addresses to this prefix.
@@ -51,6 +55,8 @@ public class IPv6Prefix implements Serializable {
         IPv6Long suffixMask = suffixMask(prefixLength);
         this.upper_suffix_mask = suffixMask.upper;
         this.lower_suffix_mask = suffixMask.lower;
+
+        this.prefixLength = prefixLength;
     }
 
     /**
@@ -212,5 +218,22 @@ public class IPv6Prefix implements Serializable {
     }
 
     public record IPv6Long(long upper, long lower) {
+    }
+
+    @Override
+    public String toString() {
+        return longToInet6Address(new IPv6Long(upper, lower)).getHostAddress() + "/" + this.prefixLength;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof IPv6Prefix)) return false;
+        IPv6Prefix other = (IPv6Prefix) obj;
+        return this.upper == other.upper && this.lower == other.lower && this.prefixLength == other.prefixLength;
+    }
+
+    @Override
+    public int hashCode() {
+        return Long.hashCode(upper) ^ Long.hashCode(lower) ^ prefixLength;
     }
 }

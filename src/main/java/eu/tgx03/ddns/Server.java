@@ -37,10 +37,7 @@ public class Server {
      * This map holds all the DNSProviders as well as their corresponding zonefiles.
      */
     private final Map<DNSProvider, Zonefile> zonefiles;
-    /**
-     * The port on which the server listens for requests.
-     */
-    private final int port;
+    private final HttpServer server;
 
     /**
      * Constructs a new Server instance with the specified zonefiles map.
@@ -49,9 +46,9 @@ public class Server {
      * @param zonefiles A map where the key is a DNSProvider and the value is its corresponding Zonefile.
      *                  This map represents the DNS setup for the server, linking providers to their zonefile configurations.
      */
-    public Server(Map<DNSProvider, Zonefile> zonefiles) {
+    public Server(Map<DNSProvider, Zonefile> zonefiles) throws IOException {
         this.zonefiles = zonefiles;
-        this.port = 80;
+        server = HttpServer.create(new InetSocketAddress(80), 0);
 
         Thread update = new Thread(new Updater());
         update.setDaemon(true);
@@ -65,9 +62,9 @@ public class Server {
      *                  This map represents the DNS setup for the server, linking providers to their zonefile configurations.
      * @param port      The port on which the server will listen for incoming network connections.
      */
-    public Server(Map<DNSProvider, Zonefile> zonefiles, int port) {
+    public Server(Map<DNSProvider, Zonefile> zonefiles, int port) throws IOException {
         this.zonefiles = zonefiles;
-        this.port = port;
+        server = HttpServer.create(new InetSocketAddress(port), 0);
 
         Thread update = new Thread(new Updater());
         update.setDaemon(true);
@@ -79,11 +76,14 @@ public class Server {
      *
      * @throws IOException In case the server could not be created or started.
      */
-    public void start() throws IOException {
-        HttpServer server = HttpServer.create(new InetSocketAddress(port), 0);
-        server.createContext("/update", new Handler());
-        server.setExecutor(null);
-        server.start();
+    public void start() {
+        this.server.createContext("/update", new Handler());
+        this.server.setExecutor(null);
+        this.server.start();
+    }
+
+    public void stop() {
+        this.server.stop(0);
     }
 
     /**

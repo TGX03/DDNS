@@ -106,7 +106,7 @@ public class Zonefile implements Serializable {
      */
     public Zonefile(File source) throws IOException {
         try (FileReader reader = new FileReader(source)) {
-            this.zoneBase = reader.readAllLines().stream().collect(Collectors.joining(System.lineSeparator()));
+            this.zoneBase = new BufferedReader(reader).lines().collect(Collectors.joining(System.lineSeparator()));
         }
     }
 

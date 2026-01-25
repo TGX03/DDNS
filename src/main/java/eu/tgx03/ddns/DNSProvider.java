@@ -1,5 +1,7 @@
 package eu.tgx03.ddns;
 
+import java.io.IOException;
+
 /**
  * Represents a provider for handling DNS-related operations.
  * This interface defines the contract for sending zone files
@@ -13,6 +15,6 @@ public interface DNSProvider {
      *
      * @param zonefile The DNS zone file to be sent. It contains records and configurations relevant to a domain's DNS setup.
      */
-    void sendZonefile(Zonefile zonefile);
+    void sendZonefile(Zonefile zonefile) throws IOException;
 
 }

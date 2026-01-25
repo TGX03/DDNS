@@ -99,7 +99,7 @@ public class Server {
     /**
      * Update all DNS providers with the current zonefiles.
      */
-    private void update() {
+    private void update() throws IOException {
         for (Map.Entry<DNSProvider, Zonefile> entry : zonefiles.entrySet())
             entry.getKey().sendZonefile(entry.getValue());
     }
@@ -240,7 +240,11 @@ public class Server {
                     Thread.sleep(5000);
                 } catch (InterruptedException ignored) {
                 }
-                update();
+                try {
+                    update();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         }
     }

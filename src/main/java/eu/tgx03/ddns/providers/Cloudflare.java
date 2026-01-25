@@ -115,7 +115,7 @@ public class Cloudflare implements DNSProvider {
         writer.append(HYPHENS + BOUNDARY + CRLF);
         writer.append("Content-Disposition: form-data; name=\"file\"; filename=\"" + FILE_NAME + "\"" + CRLF);
         writer.append("Content-Type: text/plain").append(CRLF).append(CRLF).flush();
-        writer.append(zonefile.getZoneFile()).flush();
+        writer.append(zonefile.toString()).flush();
         writer.append(CRLF).flush();
         writer.append(HYPHENS + BOUNDARY + HYPHENS + CRLF).flush();
 

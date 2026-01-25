@@ -174,9 +174,9 @@ public class Zonefile implements Serializable {
      * prefixes accordingly, and replaces them in the zone file.
      *
      * @return The updated zone file string after performing all address and prefix replacements.
-     * @throws UnknownHostException If address resolution fails at any point during the operation.
      */
-    public String getZoneFile() throws UnknownHostException {
+    @Override
+    public String toString() {
         ipv4WriteLock.lock();
         ipv6WriteLock.lock();
         ipv6PrefixWriteLock.lock();
@@ -199,7 +199,12 @@ public class Zonefile implements Serializable {
         while (matcher.find()) {
             if (ipv6Prefixes.containsKey(matcher.group())) continue;
             int prefix = Integer.parseInt(matcher.group(1));
-            Inet6Address address = (Inet6Address) Inet6Address.getByName(matcher.group(2));
+            Inet6Address address = null;
+            try {
+                address = (Inet6Address) Inet6Address.getByName(matcher.group(2));
+            } catch (UnknownHostException e) {
+                throw new RuntimeException(e);
+            }
             if (this.prefixes[prefix] != null) {
                 Inet6Address adjustedAddress = this.prefixes[prefix].adjustPrefix(address);
                 ipv6Prefixes.put(matcher.group(), adjustedAddress);

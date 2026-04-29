@@ -186,6 +186,7 @@ public class Server {
          */
         private void updateIP4(int id, String ip) throws UnknownHostException {
             Inet4Address address = (Inet4Address) Inet4Address.getByName(ip);
+            System.out.println("Updating IPv4-address " + id + " to " + address);
             for (Map.Entry<DNSProvider, Zonefile> entry : zonefiles.entrySet())
                 entry.getValue().setIpv4Address(id, address);
             scheduleUpdate();
@@ -201,6 +202,7 @@ public class Server {
          */
         private void updateIP6(int id, String ip) throws UnknownHostException {
             Inet6Address address = (Inet6Address) Inet6Address.getByName(ip);
+            System.out.println("Updating IPv6-address " + id + " to " + address);
             for (Map.Entry<DNSProvider, Zonefile> entry : zonefiles.entrySet())
                 entry.getValue().setIpv6Address(id, address);
             scheduleUpdate();
@@ -217,6 +219,7 @@ public class Server {
         private void updatePrefix(int id, String prefix, int prefixLength) throws UnknownHostException {
             Inet6Address address = (Inet6Address) Inet6Address.getByName(prefix);
             IPv6Prefix ip6prefix = new IPv6Prefix(prefixLength, address);
+            System.out.println("Updating IPv6-prefix " + id + " to " + ip6prefix);
             for (Map.Entry<DNSProvider, Zonefile> entry : zonefiles.entrySet())
                 entry.getValue().setIpv6Prefix(id, ip6prefix);
             scheduleUpdate();

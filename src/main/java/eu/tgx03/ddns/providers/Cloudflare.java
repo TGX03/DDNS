@@ -48,7 +48,7 @@ public class Cloudflare implements DNSProvider {
     }
 
     @Override
-    public void sendZonefile(Zonefile zonefile) throws IOException {
+    public synchronized void sendZonefile(Zonefile zonefile) throws IOException {
         deleteRecords();
         uploadZonefile(zonefile);
     }

@@ -74,7 +74,7 @@ public class Cloudflare implements DNSProvider {
         JSONArray records = new JSONObject(response).getJSONArray("result");
         for (Object current : records) {
             JSONObject record = (JSONObject) current;
-            deleteRecord(record.getString("id"));
+            if ("A".equals(record.getString("type")) || "AAAA".equals(record.getString("type"))) deleteRecord(record.getString("id"));
         }
     }
 

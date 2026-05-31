@@ -40,7 +40,7 @@ public class Zonefile implements Serializable {
      * which is represented in hexadecimal colon-separated notation.
      */
     private static final String IPv6_PREFIX_REGEX = "IP6_P_(\\d+)=([0-9a-f:]{2,39})";
-    private static final String SOA_REGEX = "^[^\\s]+\\s\\d+\\s[^\\s]+\\sSOA\\s[^\\s]+\\s[^\\s]+\\s(\\d+)\\s\\d+\\s\\d+\\s\\d+\\s\\d+$";
+    private static final String SOA_REGEX = "[^\\s]+\\s\\d+\\s[^\\s]+\\sSOA\\s[^\\s]+\\s[^\\s]+\\s(\\d+)\\s\\d+\\s\\d+\\s\\d+\\s\\d+";
 
     /**
      * The original zone file as it was loaded into the program.

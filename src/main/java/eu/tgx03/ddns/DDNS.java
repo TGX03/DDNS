@@ -1,8 +1,10 @@
 package eu.tgx03.ddns;
 
+import eu.tgx03.ddns.providers.Bind;
 import eu.tgx03.ddns.providers.Cloudflare;
 
 import java.io.*;
+import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -35,7 +37,7 @@ public class DDNS {
      * @param args Command-line arguments. Each argument can be:
      *             - "port=<number>": Specifies the port number for the server to listen on (default is 80).
      *             - "<file>;<provider>;<credentials>": Specifies a zone file path, a DNS provider (e.g., "Cloudflare"),
-     *               and provider-specific credentials separated by colons.
+     *             and provider-specific credentials separated by colons.
      * @throws IOException If an error occurs while reading zone files or setting up the server.
      */
     public static void main(String[] args) throws IOException {
@@ -61,6 +63,7 @@ public class DDNS {
             DNSProvider provider;
             switch (split[1]) {
                 case "Cloudflare" -> provider = parseCloudflare(Arrays.copyOfRange(split, 2, split.length));
+                case "Bind" -> provider = parseBind(Arrays.copyOfRange(split, 2, split.length));
                 default -> throw new IllegalArgumentException("Provider not implemented: " + split[1]);
             }
             zonefiles.put(provider, zone);
@@ -80,6 +83,17 @@ public class DDNS {
     private static Cloudflare parseCloudflare(String[] arguments) {
         assert arguments.length == 2;
         return new Cloudflare(arguments[0], arguments[1]);
+    }
+
+    /**
+     * Parses the command and path to the zonefile for Bind from the provided arguments.
+     *
+     * @param arguments The command to restart Bind and the path to the zonefile read by Bind.
+     * @return The new Bind instance.
+     */
+    private static Bind parseBind(String[] arguments) {
+        assert arguments.length == 2;
+        return new Bind(arguments[0], Paths.get(arguments[1]));
     }
 
     /**

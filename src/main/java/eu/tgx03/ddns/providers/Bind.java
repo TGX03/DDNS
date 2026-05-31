@@ -20,7 +20,7 @@ public class Bind implements DNSProvider {
      * The command to restart the Bind instance running on the server.
      *
      */
-    private final String restartCommand;
+    private final String[] restartCommand;
     /**
      * The location of the zonefile used by Bind.
      */
@@ -38,7 +38,7 @@ public class Bind implements DNSProvider {
      * @param zonefileLocation The file system path to the zonefile used by the Bind DNS server.
      */
     public Bind(String restartCommand, Path zonefileLocation) {
-        this.restartCommand = restartCommand;
+        this.restartCommand = restartCommand.split(" ");
         this.zonefileLocation = zonefileLocation;
     }
 

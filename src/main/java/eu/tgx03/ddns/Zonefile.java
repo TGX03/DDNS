@@ -8,6 +8,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -39,17 +40,19 @@ public class Zonefile implements Serializable {
      * which is represented in hexadecimal colon-separated notation.
      */
     private static final String IPv6_PREFIX_REGEX = "IP6_P_(\\d+)=([0-9a-f:]{2,39})";
+    private static final String SOA_REGEX = "^[^\\s]+\\s\\d+\\s[^\\s]+\\sSOA\\s[^\\s]+\\s[^\\s]+\\s(\\d+)\\s\\d+\\s\\d+\\s\\d+\\s\\d+$";
 
     /**
      * The original zone file as it was loaded into the program.
      */
-    private final String zoneBase;
+    private String zoneBase;
     private final Lock ipv4ReadLock;
     private final Lock ipv4WriteLock;
     private final Lock ipv6ReadLock;
     private final Lock ipv6WriteLock;
     private final Lock ipv6PrefixReadLock;
     private final Lock ipv6PrefixWriteLock;
+    private final Lock soaLock = new ReentrantLock();
 
     /**
      * An array holding all the IPv4 addresses to be put into the zonefile later on.
@@ -161,6 +164,32 @@ public class Zonefile implements Serializable {
         ipv6PrefixReadLock.lock();
         this.prefixes[index] = prefix;
         ipv6PrefixReadLock.unlock();
+    }
+
+    /**
+     * Get the current SOA serial number if it exists.
+     *
+     * @return The found SOA serial number.
+     * @throws IllegalStateException Gets thrown when this zonefile has no SOA record.
+     */
+    public int getSOA() throws IllegalStateException {
+        Matcher matcher = Pattern.compile(SOA_REGEX).matcher(zoneBase);
+        if (matcher.find()) return Integer.parseInt(matcher.group(1));
+        else throw new IllegalStateException("SOA not found in zonefile");
+    }
+
+    /**
+     * Increment the current SOA serial number by one.
+     */
+    public void incrementSOA() {
+        soaLock.lock();
+        try {
+            int soa = getSOA();
+            zoneBase = zoneBase.replace(Integer.toString(soa), Integer.toString(soa + 1));
+        } catch (IllegalStateException ignored) {
+        } finally {
+            soaLock.unlock();
+        }
     }
 
     /**

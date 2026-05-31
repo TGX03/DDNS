@@ -46,6 +46,7 @@ public class Bind implements DNSProvider {
     public void sendZonefile(Zonefile zonefile) throws IOException {
         try {
             accessLock.lock();
+            zonefile.incrementSOA();
             PrintWriter writer = new PrintWriter(zonefileLocation.toFile());
             writer.print(zonefile);
             writer.close();
